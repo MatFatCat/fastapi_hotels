@@ -1,6 +1,8 @@
 from fastapi import APIRouter
 from app.hotels.dao import HotelsDAO
-from app.hotels.schemas import SHotel
+from app.hotels.schemas import SHotel, SHotelWithRoomsLeft
+from datetime import date
+from app.exceptions import NoSuchHotelException
 
 hotels_router = APIRouter(
     prefix="/hotels",
@@ -8,6 +10,16 @@ hotels_router = APIRouter(
 )
 
 
-@hotels_router.get("")
-async def get_hotels() -> list[SHotel]:
-    return await HotelsDAO.find_all()
+@hotels_router.get("/{location}")
+async def get_hotels(location: str, date_from: date, date_to: date) -> list[SHotelWithRoomsLeft]:
+    return await HotelsDAO.find_all(location=location, date_from=date_from, date_to=date_to)
+
+
+@hotels_router.get("/id/{hotel_id}")
+async def get_hotel_by_id(hotel_id: int) -> SHotel:
+    hotel = await HotelsDAO.find_one_or_none(id=hotel_id)
+
+    if not hotel:
+        raise NoSuchHotelException
+
+    return hotel
