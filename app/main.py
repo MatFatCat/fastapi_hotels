@@ -7,9 +7,23 @@ from app.hotels.rooms.router import rooms_router
 from app.pages.router import pages_router
 from fastapi.staticfiles import StaticFiles
 from app.images.router import images_router
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from collections.abc import AsyncIterator
+from redis import asyncio as aioredis
+from contextlib import asynccontextmanager
 
-app = FastAPI()  # uvicorn app.main:app --reload
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    redis = aioredis.from_url("redis://localhost")
+    FastAPICache.init(RedisBackend(redis), prefix="cache")
+    yield
+
+
+app = FastAPI(lifespan=lifespan)  # uvicorn app.main:app --reload
 app.mount("/static", StaticFiles(directory="app/static"), "static")
+
 
 app.include_router(auth_router)
 app.include_router(booking_router)

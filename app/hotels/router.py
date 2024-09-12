@@ -3,6 +3,8 @@ from app.hotels.dao import HotelsDAO
 from app.hotels.schemas import SHotel, SHotelWithRoomsLeft
 from datetime import date
 from app.exceptions import NoSuchHotelException
+from fastapi_cache.decorator import cache
+import asyncio
 
 hotels_router = APIRouter(
     prefix="/hotels",
@@ -11,6 +13,7 @@ hotels_router = APIRouter(
 
 
 @hotels_router.get("/{location}")
+@cache(expire=60)
 async def get_hotels(location: str, date_from: date, date_to: date) -> list[SHotelWithRoomsLeft]:
     return await HotelsDAO.find_all(location=location, date_from=date_from, date_to=date_to)
 
