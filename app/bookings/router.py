@@ -5,6 +5,8 @@ from app.users.models import Users
 from app.users.dependencies import get_current_user
 from datetime import date
 from app.exceptions import RoomeCannotBeBookedException
+from pydantic import parse_obj_as
+from app.tasks.tasks import send_booking_confirmation_email
 
 booking_router = APIRouter(
     prefix="/bookings",
@@ -24,10 +26,13 @@ async def add_booking(room_id: int, date_from: date, date_to: date, user: Users 
     if not booking:
         raise RoomeCannotBeBookedException
 
-    return booking
+    booking_dict = parse_obj_as(SBooking, booking).dict()
+    send_booking_confirmation_email.delay(booking_dict, user.email)
+
+    return booking_dict
 
 
 @booking_router.delete("/{booking_id}")
 async def delete_booking(booking_id: int, user: Users = Depends(get_current_user)):
-    result = await BookingsDAO.delete_booking(user.id, booking_id)
+    await BookingsDAO.delete_booking(user.id, booking_id)
 

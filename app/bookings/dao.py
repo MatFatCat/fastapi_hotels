@@ -2,6 +2,7 @@ from app.dao.base import BaseDAO
 from app.bookings.models import Bookings
 from datetime import date
 from sqlalchemy import select, and_, or_, insert, func, outerjoin
+from sqlalchemy.orm import joinedload
 from app.hotels.rooms.models import Rooms
 from app.database import async_session_maker
 from app.exceptions import BookingNotFromThisUserException, NoSuchBookingException
@@ -12,11 +13,13 @@ class BookingsDAO(BaseDAO):
     model = Bookings
 
     @classmethod
-    async def add(cls,
-                  user_id: int,
-                  room_id: int,
-                  date_from: date,
-                  date_to: date):
+    async def add(
+            cls,
+            user_id: int,
+            room_id: int,
+            date_from: date,
+            date_to: date
+            ):
         """
         WITH booked_rooms AS (
 	        SELECT * FROM bookings WHERE room_id = 1 AND
@@ -92,3 +95,16 @@ class BookingsDAO(BaseDAO):
 
             await session.delete(booking)
             await session.commit()
+
+    @classmethod
+    async def find_by_id_load_room_and_hotel(cls, booking_id: int) -> Bookings:
+        async with async_session_maker() as session:
+
+            query = session.query(Bookings).options(
+                joinedload(Bookings.room_id).joinedload(Rooms.hotel_id)
+            ).filter(Bookings.id == booking_id).first()
+
+            result = await session.execute(query)
+            booking_obj = result.scalar_one_or_none()
+
+            return booking_obj
