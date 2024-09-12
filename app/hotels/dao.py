@@ -40,6 +40,7 @@ class HotelsDAO(BaseDAO):
                     cls.model.location,
                     cls.model.services,
                     cls.model.rooms_quantity,
+                    cls.model.image_id,
                     free_rooms_subquery.c.rooms_left
                 )
                 .join(free_rooms_subquery, cls.model.id == free_rooms_subquery.c.hotel_id)
