@@ -13,6 +13,10 @@ from collections.abc import AsyncIterator
 from redis import asyncio as aioredis
 from contextlib import asynccontextmanager
 from app.config import settings
+from sqladmin import Admin
+from app.database import engine
+from app.admin.views import UsersAdmin, BookingsAdmin, HotelsAdmin, RoomsAdmin
+from app.admin.auth import authentication_backend
 
 
 @asynccontextmanager
@@ -22,7 +26,14 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     yield
 
 
-app = FastAPI(lifespan=lifespan)  # uvicorn app.main:app --reload
+#  uvicorn app.main:app --reload
+#  celery -A app.tasks.celery_root:celery worker --loglevel=INFO
+#  celery -A app.tasks.celery_root:celery flower
+
+# api docs - http://localhost:8000/docs
+# api admin page - http://localhost:8000/admin
+
+app = FastAPI(lifespan=lifespan)
 app.mount("/static", StaticFiles(directory="app/static"), "static")
 
 
@@ -46,3 +57,10 @@ app.add_middleware(
     allow_headers=["Content-Type", "Set-Cookie", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin",
                    "Authorization"],
 )
+
+admin = Admin(app, engine, authentication_backend=authentication_backend)
+
+admin.add_view(UsersAdmin)
+admin.add_view(BookingsAdmin)
+admin.add_view(HotelsAdmin)
+admin.add_view(RoomsAdmin)

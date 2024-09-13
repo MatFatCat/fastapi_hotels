@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     SMTP_PORT: int
     SMTP_USER: str
     SMTP_PASS: str
+    JWT_TOKEN_ACCESS_EXPIRE_M: int
 
     class Config:
         env_file = ".env"
