@@ -10,6 +10,7 @@ class Users(Base):
     name = Column(String, nullable=False)
     email = Column(String, nullable=False)
     hashed_password = Column(String, nullable=False)
+    token_refresh = Column(String, nullable=True)
 
     booking = relationship("Bookings", back_populates="user")
 

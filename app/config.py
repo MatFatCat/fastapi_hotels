@@ -16,9 +16,11 @@ class Settings(BaseSettings):
     SMTP_USER: str
     SMTP_PASS: str
     JWT_TOKEN_ACCESS_EXPIRE_M: int
+    JWT_TOKEN_REFRESH_EXPIRE_D: int
 
     class Config:
         env_file = ".env"
 
 
 settings = Settings()
+

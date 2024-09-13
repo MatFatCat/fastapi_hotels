@@ -16,9 +16,9 @@ def verify_password(plain_password, hashed_password) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def create_access_token(data: dict) -> str:
+def create_token(data: dict, **time_param) -> str:
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=settings.JWT_TOKEN_ACCESS_EXPIRE_M)
+    expire = datetime.utcnow() + timedelta(**time_param)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
         to_encode, settings.JWT_SECRET_KEY, settings.JWT_ENCODING_ALG
@@ -33,5 +33,3 @@ async def authenticate_user(email: EmailStr, password: str):
         return None
 
     return user
-
-
