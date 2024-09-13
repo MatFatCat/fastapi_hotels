@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "Luxury Hotel",
+    "location": "New York",
+    "services": ["Wi-Fi", "Pool", "Spa"],
+    "rooms_quantity": 10,
+    "image_id": 101
+  },
+  {
+    "id": 2,
+    "name": "Budget Hotel",
+    "location": "San Francisco",
+    "services": ["Wi-Fi", "Parking"],
+    "rooms_quantity": 25,
+    "image_id": 102
+  }
+]

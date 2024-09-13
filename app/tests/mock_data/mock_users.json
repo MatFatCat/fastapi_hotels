@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "hashed_password": "hashed_password_example",
+    "token_refresh": "refresh_token_1"
+  },
+  {
+    "id": 2,
+    "name": "Jane Smith",
+    "email": "jane.smith@example.com",
+    "hashed_password": "hashed_password_example_2",
+    "token_refresh": "refresh_token_2"
+  }
+]
