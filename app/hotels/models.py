@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 class Hotels(Base):
     __tablename__ = "hotels"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     location = Column(String, nullable=False)
     services = Column(JSON)

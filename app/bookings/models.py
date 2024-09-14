@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 class Bookings(Base):
     __tablename__ = "bookings"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     room_id = Column(ForeignKey("rooms.id"), nullable=False)
     user_id = Column(ForeignKey("users.id"), nullable=False)
     date_from = Column(Date, nullable=False)
