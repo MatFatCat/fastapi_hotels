@@ -8,10 +8,16 @@ from app.hotels.models import Hotels
 from app.hotels.rooms.models import Rooms
 from app.bookings.models import Bookings
 from sqlalchemy import insert
+from datetime import datetime
+from app.logging.logger import logger
+from asyncio import BaseEventLoop
 
 
 @pytest.fixture(autouse=True, scope="session")
 async def prepare_database():
+
+    logger.info(f"in prepare_database func {settings.MODE}")
+
     assert settings.MODE == "TEST"
 
     async with engine.begin() as conn:
@@ -26,6 +32,10 @@ async def prepare_database():
     rooms = open_mock_json("rooms")
     users = open_mock_json("users")
     bookings = open_mock_json("bookings")
+
+    for booking in bookings:
+        booking['date_from'] = datetime.strptime(booking['date_from'], "%Y-%m-%d")
+        booking['date_to'] = datetime.strptime(booking['date_to'], "%Y-%m-%d")
 
     async with async_session_maker() as session:
         add_hotels_query = insert(Hotels).values(hotels)
@@ -42,7 +52,7 @@ async def prepare_database():
 
 
 @pytest.fixture(scope="session")
-def event_loop(request):
+def event_loop(request) -> BaseEventLoop:
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
     loop.close()
