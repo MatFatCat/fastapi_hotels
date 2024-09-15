@@ -3,14 +3,12 @@
     "id": 1,
     "name": "John Doe",
     "email": "john.doe@example.com",
-    "hashed_password": "hashed_password_example",
-    "token_refresh": "refresh_token_1"
+    "hashed_password": "$2b$12$axw2rD3z5LbYUI2ZCkWiGuTOl4tfoBjqOcVYkslQJaRxWa1qPl1hG"
   },
   {
     "id": 2,
     "name": "Jane Smith",
     "email": "jane.smith@example.com",
-    "hashed_password": "hashed_password_example_2",
-    "token_refresh": "refresh_token_2"
+    "hashed_password": "$2b$12$wJ0NwIPd0FTn789Q8vAJze5BhvWdmtXLi/AVsUgrscuS1d6FLY1yG"
   }
 ]

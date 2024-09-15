@@ -66,7 +66,14 @@ class BookingsDAO(BaseDAO):
                 price = await session.execute(get_price)
                 price: int = price.scalar()
 
+                last_id_query = select(func.max(cls.model.id))
+                result = await session.execute(last_id_query)
+                last_id = result.scalar() or 0
+
+                new_id = last_id + 1
+
                 add_booking = insert(Bookings).values(
+                    id=new_id,
                     room_id=room_id,
                     user_id=user_id,
                     date_from=date_from,

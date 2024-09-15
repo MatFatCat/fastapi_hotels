@@ -12,7 +12,7 @@
     "name": "Budget Hotel",
     "location": "San Francisco",
     "services": ["Wi-Fi", "Parking"],
-    "rooms_quantity": 25,
+    "rooms_quantity": 1,
     "image_id": 102
   }
 ]

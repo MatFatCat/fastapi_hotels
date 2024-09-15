@@ -16,11 +16,8 @@ from httpx import AsyncClient
 from app.main import app as fastapi_app
 
 
-@pytest.fixture(autouse=True, scope="session")
+@pytest.fixture(autouse=True, scope="function")
 async def prepare_database():
-
-    logger.info(f"in prepare_database func {settings.MODE}")
-
     assert settings.MODE == "TEST"
 
     async with engine.begin() as conn:
@@ -64,6 +61,21 @@ def event_loop(request) -> BaseEventLoop:
 @pytest.fixture(scope="function")
 async def ac():
     async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
+        yield ac
+
+
+@pytest.fixture(scope="session")
+async def authenticated_ac():
+    async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
+        response = await ac.post("auth/login", json={
+            "email": "jane.smith@example.com",
+            "password": "test2"
+        })
+
+        assert response.status_code == 200
+        assert ac.cookies["booking_access_token"]
+        assert ac.cookies["booking_refresh_token"]
+
         yield ac
 
 
