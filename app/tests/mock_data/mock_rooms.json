@@ -14,7 +14,7 @@
     "hotel_id": 2,
     "name": "Standard Room",
     "description": "Comfortable room with city view",
-    "price": 100,
+    "price": 400,
     "services": ["Wi-Fi", "Air Conditioning"],
     "quantity": 1,
     "image_id": 202

@@ -4,7 +4,6 @@ from app.hotels.schemas import SHotel, SHotelWithRoomsLeft
 from datetime import date
 from app.exceptions import NoSuchHotelException
 from fastapi_cache.decorator import cache
-import asyncio
 
 hotels_router = APIRouter(
     prefix="/hotels",

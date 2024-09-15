@@ -35,6 +35,10 @@ class RoomsDAO(BaseDAO):
             ).where(cls.model.hotel_id == hotel_id).group_by(cls.model.id)
 
             result = await session.execute(query)
-            return result.mappings().all()
+            rooms = result.mappings().all()
 
+            # Проверка, есть ли комнаты для данного отеля
+            if not rooms:
+                return None
 
+            return rooms
