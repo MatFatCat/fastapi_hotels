@@ -29,3 +29,10 @@ async def test_login_user(email: str, password: str, status_code: int, ac: Async
     })
 
     assert responce.status_code == status_code
+
+
+async def test_user_me(authenticated_ac: AsyncClient):
+    response = await authenticated_ac.get("auth/me")
+    assert response.status_code == 200
+    assert response.json()['email'] == "jane.smith@example.com"
+    assert response.json()['id'] == 2

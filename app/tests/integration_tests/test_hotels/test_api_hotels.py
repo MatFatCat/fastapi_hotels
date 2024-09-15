@@ -9,7 +9,8 @@ from app.logging.logger import logger
 
 @pytest.mark.parametrize("location,date_from,date_to,status_code,hotels_count", [
     ("New York", "2025-11-15", "2025-11-20", 200, 1),
-    ("San Francisco", "2024-09-10", "2024-09-12", 200, 0)
+    ("San Francisco", "2024-09-10", "2024-09-12", 200, 0),
+    ("San Francisco", "2024-09-12", "2024-09-10", 409, 0),
 ])
 async def test_get_hotels_by_location(location: str, date_from: str, date_to: str, status_code: int,
                                       hotels_count: int, ac: AsyncClient):
@@ -17,7 +18,8 @@ async def test_get_hotels_by_location(location: str, date_from: str, date_to: st
     FastAPICache.init(RedisBackend(redis), prefix="cache")
     responce = await ac.get(f"/hotels/{location}?date_from={date_from}&date_to={date_to}")
     assert responce.status_code == status_code
-    assert len(responce.json()) == hotels_count
+    if responce.status_code == 200:
+        assert len(responce.json()) == hotels_count
 
 
 @pytest.mark.parametrize("hotel_id,status_code", [
@@ -31,7 +33,8 @@ async def test_get_hotels_by_hotels_id(hotel_id: int, status_code: int, ac: Asyn
 
 @pytest.mark.parametrize("hotel_id,date_from,date_to,status_code,rooms_count,total_cost", [
     (2, "2024-09-10", "2024-09-12", 200, 0, 800),
-    (999, "2024-09-10", "2024-09-12", 404, 0, 800)
+    (999, "2024-09-10", "2024-09-12", 404, 0, 800),
+    (999, "2024-09-12", "2024-09-11", 409, 0, 800)
 ])
 async def test_get_rooms_by_hotel_id(hotel_id: int, date_from: str, date_to: str, status_code: int,
                                      rooms_count: int, total_cost: int, ac: AsyncClient):

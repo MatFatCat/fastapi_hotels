@@ -4,7 +4,7 @@ from app.bookings.schemas import SBooking
 from app.users.models import Users
 from app.users.dependencies import get_current_user
 from datetime import date
-from app.exceptions import RoomeCannotBeBookedException
+from app.exceptions import RoomeCannotBeBookedException, NoSuchBookingException
 from pydantic import parse_obj_as
 from app.tasks.tasks import send_booking_confirmation_email
 
@@ -35,4 +35,14 @@ async def add_booking(room_id: int, date_from: date, date_to: date, user: Users 
 @booking_router.delete("/{booking_id}")
 async def delete_booking(booking_id: int, user: Users = Depends(get_current_user)):
     await BookingsDAO.delete_booking(user.id, booking_id)
+
+
+@booking_router.get("/{booking_id}")
+async def get_booking_by_id(booking_id: int, user: Users = Depends(get_current_user)):
+    booking = await BookingsDAO.find_one_or_none(id=booking_id)
+
+    if not booking:
+        raise NoSuchBookingException
+
+    return booking
 
