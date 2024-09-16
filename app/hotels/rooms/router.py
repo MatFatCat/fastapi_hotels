@@ -6,14 +6,13 @@ from fastapi import APIRouter
 from app.exceptions import NoSuchHotelException, DateToLessThanDateFromException
 
 
-rooms_router = APIRouter(
-    prefix="/hotels",
-    tags=["Отели"]
-)
+rooms_router = APIRouter(prefix="/hotels", tags=["Отели"])
 
 
 @rooms_router.get("/{hotel_id}/rooms")
-async def get_rooms(hotel_id: int, date_from: date, date_to: date) -> Optional[list[SRoom]]:
+async def get_rooms(
+    hotel_id: int, date_from: date, date_to: date
+) -> Optional[list[SRoom]]:
     if date_to < date_from:
         raise DateToLessThanDateFromException
     rooms = await RoomsDAO.find_all_by_hotel_id(hotel_id, date_from, date_to)
@@ -21,4 +20,3 @@ async def get_rooms(hotel_id: int, date_from: date, date_to: date) -> Optional[l
         raise NoSuchHotelException
 
     return rooms
-

@@ -5,18 +5,19 @@ from datetime import date
 from app.exceptions import NoSuchHotelException, DateToLessThanDateFromException
 from fastapi_cache.decorator import cache
 
-hotels_router = APIRouter(
-    prefix="/hotels",
-    tags=["Отели"]
-)
+hotels_router = APIRouter(prefix="/hotels", tags=["Отели"])
 
 
 @hotels_router.get("/{location}")
 @cache(expire=60)
-async def get_hotels(location: str, date_from: date, date_to: date) -> list[SHotelWithRoomsLeft]:
+async def get_hotels(
+    location: str, date_from: date, date_to: date
+) -> list[SHotelWithRoomsLeft]:
     if date_to < date_from:
         raise DateToLessThanDateFromException
-    return await HotelsDAO.find_all(location=location, date_from=date_from, date_to=date_to)
+    return await HotelsDAO.find_all(
+        location=location, date_from=date_from, date_to=date_to
+    )
 
 
 @hotels_router.get("/id/{hotel_id}")

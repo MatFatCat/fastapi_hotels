@@ -2,10 +2,7 @@ from fastapi import APIRouter, UploadFile
 import shutil
 from app.tasks.tasks import process_picture
 
-images_router = APIRouter(
-    prefix="/images",
-    tags=["Изображения"]
-)
+images_router = APIRouter(prefix="/images", tags=["Изображения"])
 
 
 @images_router.post("/hotels")

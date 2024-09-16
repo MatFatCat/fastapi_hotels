@@ -10,8 +10,8 @@ class BookingException(HTTPException):
 
 
 class UserAlreadyExistsException(BookingException):
-    status_code=status.HTTP_409_CONFLICT
-    detail="Пользователь уже существует"
+    status_code = status.HTTP_409_CONFLICT
+    detail = "Пользователь уже существует"
 
 
 class IncorrectEmailOrPasswordException(BookingException):

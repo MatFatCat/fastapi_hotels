@@ -3,17 +3,19 @@ import pytest
 from datetime import datetime
 
 
-@pytest.mark.parametrize("user_id,room_id,date_from,date_to,accessible", [
-    (2, 2, "2024-10-10", "2024-10-20", True),
-    (1, 2, "2024-09-10", "2024-09-12", False),
-])
-async def test_add_get_booking(user_id, room_id, date_from, date_to,
-                                   accessible):
+@pytest.mark.parametrize(
+    "user_id,room_id,date_from,date_to,accessible",
+    [
+        (2, 2, "2024-10-10", "2024-10-20", True),
+        (1, 2, "2024-09-10", "2024-09-12", False),
+    ],
+)
+async def test_add_get_booking(user_id, room_id, date_from, date_to, accessible):
     new_booking = await BookingsDAO.add(
         user_id,
         room_id,
         datetime.strptime(date_from, "%Y-%m-%d"),
-        datetime.strptime(date_to, "%Y-%m-%d")
+        datetime.strptime(date_to, "%Y-%m-%d"),
     )
 
     if accessible:

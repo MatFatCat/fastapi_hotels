@@ -33,7 +33,7 @@ class BaseDAO:
             result = await session.execute(last_id_query)
             last_id = result.scalar() or 0
 
-            data['id'] = last_id + 1
+            data["id"] = last_id + 1
 
             query = insert(cls.model).values(**data)
             await session.execute(query)

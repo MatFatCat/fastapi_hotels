@@ -26,7 +26,9 @@ class AdminAuth(AuthenticationBackend):
         request.session.clear()
         return True
 
-    async def authenticate(self, request: Request, user: Users = Depends(get_current_user)) -> Union[RedirectResponse, bool]:
+    async def authenticate(
+        self, request: Request, user: Users = Depends(get_current_user)
+    ) -> Union[RedirectResponse, bool]:
         token = request.session.get("token")
 
         if not token:

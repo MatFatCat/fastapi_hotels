@@ -8,10 +8,7 @@ from app.exceptions import RoomeCannotBeBookedException, NoSuchBookingException
 from pydantic import parse_obj_as
 from app.tasks.tasks import send_booking_confirmation_email
 
-booking_router = APIRouter(
-    prefix="/bookings",
-    tags=["Бронирования"]
-)
+booking_router = APIRouter(prefix="/bookings", tags=["Бронирования"])
 
 
 @booking_router.get("")
@@ -20,7 +17,12 @@ async def get_bookings(user: Users = Depends(get_current_user)) -> list[SBooking
 
 
 @booking_router.post("")
-async def add_booking(room_id: int, date_from: date, date_to: date, user: Users = Depends(get_current_user)):
+async def add_booking(
+    room_id: int,
+    date_from: date,
+    date_to: date,
+    user: Users = Depends(get_current_user),
+):
     booking = await BookingsDAO.add(user.id, room_id, date_from, date_to)
 
     if not booking:
@@ -45,4 +47,3 @@ async def get_booking_by_id(booking_id: int, user: Users = Depends(get_current_u
         raise NoSuchBookingException
 
     return booking
-

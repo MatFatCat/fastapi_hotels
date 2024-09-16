@@ -4,10 +4,7 @@ from app.config import settings
 from app.bookings.dao import BookingsDAO
 
 
-def create_booking_confirmation_template(
-        booking: dict,
-        email_to: EmailStr
-):
+def create_booking_confirmation_template(booking: dict, email_to: EmailStr):
     email = EmailMessage()
     email["Subject"] = "Подтверждение бронирования"
     email["From"] = settings.SMTP_USER
@@ -20,7 +17,7 @@ def create_booking_confirmation_template(
 
             Цена за {booking["total_days"]} дней прибывания = {booking["total_cost"]} руб.
             """,
-        subtype="html"
+        subtype="html",
     )
 
     return email

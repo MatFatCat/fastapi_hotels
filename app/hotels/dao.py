@@ -18,15 +18,18 @@ class HotelsDAO(BaseDAO):
             free_rooms_subquery = (
                 select(
                     Rooms.hotel_id,
-                    (func.sum(Rooms.quantity) - func.coalesce(func.count(Bookings.id), 0)).label("rooms_left")
+                    (
+                        func.sum(Rooms.quantity)
+                        - func.coalesce(func.count(Bookings.id), 0)
+                    ).label("rooms_left"),
                 )
                 .outerjoin(
                     Bookings,
                     and_(
                         Rooms.id == Bookings.room_id,
                         Bookings.date_from <= date_to,
-                        Bookings.date_to >= date_from
-                    )
+                        Bookings.date_to >= date_from,
+                    ),
                 )
                 .group_by(Rooms.hotel_id)
                 .subquery()
@@ -41,10 +44,14 @@ class HotelsDAO(BaseDAO):
                     cls.model.services,
                     cls.model.rooms_quantity,
                     cls.model.image_id,
-                    free_rooms_subquery.c.rooms_left
+                    free_rooms_subquery.c.rooms_left,
                 )
-                .join(free_rooms_subquery, cls.model.id == free_rooms_subquery.c.hotel_id)
-                .filter(cls.model.location == location, free_rooms_subquery.c.rooms_left > 0)
+                .join(
+                    free_rooms_subquery, cls.model.id == free_rooms_subquery.c.hotel_id
+                )
+                .filter(
+                    cls.model.location == location, free_rooms_subquery.c.rooms_left > 0
+                )
             )
 
             result = await session.execute(query)
