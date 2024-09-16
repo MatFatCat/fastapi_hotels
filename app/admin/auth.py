@@ -1,12 +1,14 @@
+from typing import Optional, Union
+
+from fastapi import Depends
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
-from app.users.auth import authenticate_user, create_token
-from typing import Optional, Union
-from app.users.dependencies import get_current_user
+
 from app.logging.logger import logger
+from app.users.auth import authenticate_user, create_token
+from app.users.dependencies import get_current_user
 from app.users.models import Users
-from fastapi import Depends
 
 
 class AdminAuth(AuthenticationBackend):

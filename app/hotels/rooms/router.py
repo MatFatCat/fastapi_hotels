@@ -1,10 +1,11 @@
-from app.hotels.rooms.dao import RoomsDAO
-from app.hotels.rooms.schemas import SRoom
 from datetime import date
 from typing import Optional, Union
-from fastapi import APIRouter
-from app.exceptions import NoSuchHotelException, DateToLessThanDateFromException
 
+from fastapi import APIRouter
+
+from app.exceptions import DateToLessThanDateFromException, NoSuchHotelException
+from app.hotels.rooms.dao import RoomsDAO
+from app.hotels.rooms.schemas import SRoom
 
 rooms_router = APIRouter(prefix="/hotels", tags=["Отели"])
 

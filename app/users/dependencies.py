@@ -1,18 +1,19 @@
-from fastapi import Request, Depends, Response
-from jose import jwt, JWTError
-from app.config import settings
 from datetime import datetime
-from app.users.dao import UsersDAO
-from app.users.models import Users
+
+from fastapi import Depends, Request, Response
+from jose import JWTError, jwt
+
+from app.config import settings
 from app.exceptions import (
-    TokenExpiredException,
-    NoTokenException,
     IncorrectTokenFormatException,
+    NoTokenException,
+    TokenExpiredException,
     UserIsNotPresentException,
 )
-from app.users.auth import create_token
-from app.config import settings
 from app.logging.logger import logger
+from app.users.auth import create_token
+from app.users.dao import UsersDAO
+from app.users.models import Users
 
 
 def get_token(request: Request):

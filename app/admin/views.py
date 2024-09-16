@@ -1,8 +1,9 @@
 from sqladmin import Admin, ModelView
-from app.users.models import Users
+
 from app.bookings.models import Bookings
-from app.hotels.rooms.models import Rooms
 from app.hotels.models import Hotels
+from app.hotels.rooms.models import Rooms
+from app.users.models import Users
 
 
 class UsersAdmin(ModelView, model=Users):

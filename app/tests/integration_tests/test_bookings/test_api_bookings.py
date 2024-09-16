@@ -1,5 +1,6 @@
 import pytest
 from httpx import AsyncClient
+
 from app.logging.logger import logger
 
 

@@ -1,7 +1,9 @@
 from email.message import EmailMessage
+
 from pydantic import EmailStr
-from app.config import settings
+
 from app.bookings.dao import BookingsDAO
+from app.config import settings
 
 
 def create_booking_confirmation_template(booking: dict, email_to: EmailStr):

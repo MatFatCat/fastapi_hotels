@@ -1,8 +1,9 @@
 import pytest
-from httpx import AsyncClient
-from redis import asyncio as aioredis
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from httpx import AsyncClient
+from redis import asyncio as aioredis
+
 from app.config import settings
 from app.logging.logger import logger
 

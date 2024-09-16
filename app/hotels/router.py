@@ -1,9 +1,11 @@
+from datetime import date
+
 from fastapi import APIRouter
+from fastapi_cache.decorator import cache
+
+from app.exceptions import DateToLessThanDateFromException, NoSuchHotelException
 from app.hotels.dao import HotelsDAO
 from app.hotels.schemas import SHotel, SHotelWithRoomsLeft
-from datetime import date
-from app.exceptions import NoSuchHotelException, DateToLessThanDateFromException
-from fastapi_cache.decorator import cache
 
 hotels_router = APIRouter(prefix="/hotels", tags=["Отели"])
 

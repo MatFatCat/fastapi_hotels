@@ -1,22 +1,24 @@
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.bookings.router import booking_router
-from app.hotels.router import hotels_router
-from app.users.router import auth_router
-from app.hotels.rooms.router import rooms_router
-from app.pages.router import pages_router
 from fastapi.staticfiles import StaticFiles
-from app.images.router import images_router
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from collections.abc import AsyncIterator
 from redis import asyncio as aioredis
-from contextlib import asynccontextmanager
-from app.config import settings
 from sqladmin import Admin
-from app.database import engine
-from app.admin.views import UsersAdmin, BookingsAdmin, HotelsAdmin, RoomsAdmin
+
 from app.admin.auth import authentication_backend
+from app.admin.views import BookingsAdmin, HotelsAdmin, RoomsAdmin, UsersAdmin
+from app.bookings.router import booking_router
+from app.config import settings
+from app.database import engine
+from app.hotels.rooms.router import rooms_router
+from app.hotels.router import hotels_router
+from app.images.router import images_router
+from app.pages.router import pages_router
+from app.users.router import auth_router
 
 
 @asynccontextmanager
