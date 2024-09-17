@@ -33,7 +33,7 @@ async def login_user(response: Response, user_data: SUserLogin):
     token_refresh = create_token(
         {"sub": str(user.id)}, days=settings.JWT_TOKEN_REFRESH_EXPIRE_D
     )
-    await UsersDAO.update_refresh_token(user.id, token_refresh)
+    await UsersDAO._update_refresh_token(user.id, token_refresh)
     response.set_cookie("booking_access_token", access_token, httponly=True)
     response.set_cookie("booking_refresh_token", token_refresh, httponly=True)
 

@@ -3,7 +3,7 @@ from fastapi import HTTPException, status
 
 class BookingException(HTTPException):
     status_code = 500
-    detail = ""
+    detail = "Ошибка на стороне сервера"
 
     def __init__(self):
         super().__init__(status_code=self.status_code, detail=self.detail)

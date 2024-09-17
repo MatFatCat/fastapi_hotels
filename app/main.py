@@ -1,5 +1,6 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
+import time
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,6 +9,7 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
 from sqladmin import Admin
+from fastapi import Request
 
 from app.admin.auth import authentication_backend
 from app.admin.views import BookingsAdmin, HotelsAdmin, RoomsAdmin, UsersAdmin
@@ -19,7 +21,15 @@ from app.hotels.router import hotels_router
 from app.images.router import images_router
 from app.pages.router import pages_router
 from app.users.router import auth_router
+from app.logging.logger import logger
 
+import sentry_sdk
+
+sentry_sdk.init(
+    dsn="https://93db2b0e72a22e1a351b4bb380ff823b@o4507967134826496.ingest.de.sentry.io/4507967138234448",
+    traces_sample_rate=1.0,
+    profiles_sample_rate=1.0,
+)
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
@@ -31,6 +41,9 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 #  uvicorn app.main:app --reload
 #  celery -A app.tasks.celery_root:celery worker --loglevel=INFO
 #  celery -A app.tasks.celery_root:celery flower
+
+#  pyright app/bookings/dao.py - example of using pyrigh lib for resolving errors in files
+# also can use autoflake, flake8, black for reformatting code style
 
 # api docs - http://localhost:8000/docs
 # api admin page - http://localhost:8000/admin
@@ -69,3 +82,15 @@ admin.add_view(UsersAdmin)
 admin.add_view(BookingsAdmin)
 admin.add_view(HotelsAdmin)
 admin.add_view(RoomsAdmin)
+
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.time()
+    responce = await call_next(request)
+    process_time = time.time() - start_time
+    logger.info("Request handling time", extra={
+        "process_time": round(process_time, 4)
+    })
+    responce.headers["Process-Time"] = str(process_time)
+    return responce

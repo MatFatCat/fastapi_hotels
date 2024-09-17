@@ -5,7 +5,6 @@ from httpx import AsyncClient
 from redis import asyncio as aioredis
 
 from app.config import settings
-from app.logging.logger import logger
 
 
 @pytest.mark.parametrize(
