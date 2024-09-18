@@ -3,6 +3,9 @@ from datetime import date
 from fastapi import APIRouter, Depends
 from pydantic import parse_obj_as
 
+from fastapi_versioning import version
+from fastapi_cache.decorator import cache
+
 from app.bookings.dao import BookingsDAO
 from app.bookings.schemas import SBooking
 from app.exceptions import NoSuchBookingException, RoomeCannotBeBookedException
@@ -14,6 +17,8 @@ booking_router = APIRouter(prefix="/bookings", tags=["Бронирования"]
 
 
 @booking_router.get("")
+@version(1)
+@cache(expire=30)
 async def get_bookings(user: Users = Depends(get_current_user)) -> list[SBooking]:
     return await BookingsDAO.find_all(user_id=user.id)
 
@@ -42,6 +47,7 @@ async def delete_booking(booking_id: int, user: Users = Depends(get_current_user
 
 
 @booking_router.get("/{booking_id}")
+@cache(expire=30)
 async def get_booking_by_id(booking_id: int, user: Users = Depends(get_current_user)):
     booking = await BookingsDAO.find_one_or_none(id=booking_id)
 

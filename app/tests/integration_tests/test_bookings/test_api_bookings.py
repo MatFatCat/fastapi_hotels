@@ -1,7 +1,13 @@
 import pytest
 from httpx import AsyncClient
 
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+
+from redis import asyncio as aioredis
+
 from app.logging.logger import logger
+from app.config import settings
 
 
 @pytest.mark.parametrize(
@@ -11,6 +17,7 @@ from app.logging.logger import logger
         (2, "2024-09-10", "2024-09-12", 1, 409),
         (2, "2024-09-09", "2024-09-11", 1, 409),
         (2, "2024-09-11", "2024-09-13", 1, 409),
+        (9999, "2025-10-10", "2025-10-13", 1, 409)
     ],
 )
 async def test_add_get_delete_booking_api(
@@ -21,6 +28,8 @@ async def test_add_get_delete_booking_api(
     status_code,
     authenticated_ac: AsyncClient,
 ):
+    redis = aioredis.from_url(f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}")
+    FastAPICache.init(RedisBackend(redis), prefix="cache")
     responce = await authenticated_ac.post(
         "/bookings",
         params={"room_id": room_id, "date_from": date_from, "date_to": date_to},

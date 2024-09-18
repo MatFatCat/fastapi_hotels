@@ -11,6 +11,8 @@ from redis import asyncio as aioredis
 from sqladmin import Admin
 from fastapi import Request
 
+from fastapi_versioning import VersionedFastAPI
+
 from app.admin.auth import authentication_backend
 from app.admin.views import BookingsAdmin, HotelsAdmin, RoomsAdmin, UsersAdmin
 from app.bookings.router import booking_router
@@ -31,6 +33,7 @@ sentry_sdk.init(
     profiles_sample_rate=1.0,
 )
 
+
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     redis = aioredis.from_url(f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}")
@@ -49,8 +52,6 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
 # api admin page - http://localhost:8000/admin
 
 app = FastAPI(lifespan=lifespan)
-app.mount("/static", StaticFiles(directory="app/static"), "static")
-
 
 app.include_router(auth_router)
 app.include_router(booking_router)
@@ -58,7 +59,6 @@ app.include_router(hotels_router)
 app.include_router(rooms_router)
 app.include_router(pages_router)
 app.include_router(images_router)
-
 
 origins = ["http://localhost:3000", "http://test"]
 
@@ -76,21 +76,20 @@ app.add_middleware(
     ],
 )
 
+# app = VersionedFastAPI(app,
+#                        version_format='{major}',
+#                        prefix_format='/v{major}',
+#                        description='API для бронирования отелей',
+#                        # middleware=[
+#                        #     Middleware(SessionMiddleware, secret_key='mysecretkey')
+#                        # ]
+#                        )
+
+app.mount("/static", StaticFiles(directory="app/static"), "static")
+
 admin = Admin(app, engine, authentication_backend=authentication_backend)
 
 admin.add_view(UsersAdmin)
 admin.add_view(BookingsAdmin)
 admin.add_view(HotelsAdmin)
 admin.add_view(RoomsAdmin)
-
-
-@app.middleware("http")
-async def add_process_time_header(request: Request, call_next):
-    start_time = time.time()
-    responce = await call_next(request)
-    process_time = time.time() - start_time
-    logger.info("Request handling time", extra={
-        "process_time": round(process_time, 4)
-    })
-    responce.headers["Process-Time"] = str(process_time)
-    return responce

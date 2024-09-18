@@ -8,10 +8,10 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.bookings.models import Bookings
 from app.dao.base import BaseDAO
 from app.database import async_session_maker
-from app.exceptions import BookingNotFromThisUserException, NoSuchBookingException
+from app.exceptions import BookingException, BookingNotFromThisUserException, NoSuchBookingException,\
+    NoSuchRoomException
 from app.hotels.rooms.models import Rooms
 from app.logging.logger import logger
-from app.exceptions import BookingException
 
 
 # DAO - Data Access Object
@@ -71,6 +71,9 @@ class BookingsDAO(BaseDAO):
                 rooms_left = await session.execute(get_rooms_left)
                 rooms_left: int = rooms_left.scalar()
 
+                if rooms_left is None:
+                    return rooms_left
+
                 if rooms_left > 0:
                     get_price = select(Rooms.price).filter_by(id=room_id)
                     price = await session.execute(get_price)
@@ -102,7 +105,7 @@ class BookingsDAO(BaseDAO):
 
                 else:
                     return None
-        except (SQLAlchemyError, Exception) as error:
+        except (SQLAlchemyError, Exception, NoSuchRoomException) as error:
             logger.error(f"Some error accured in BookingsDAO.add: {error}")
             raise BookingException
 

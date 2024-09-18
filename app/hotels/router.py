@@ -11,7 +11,7 @@ hotels_router = APIRouter(prefix="/hotels", tags=["Отели"])
 
 
 @hotels_router.get("/{location}")
-@cache(expire=60)
+@cache(expire=30)
 async def get_hotels(
     location: str, date_from: date, date_to: date
 ) -> list[SHotelWithRoomsLeft]:
@@ -23,6 +23,7 @@ async def get_hotels(
 
 
 @hotels_router.get("/id/{hotel_id}")
+@cache(expire=30)
 async def get_hotel_by_id(hotel_id: int) -> SHotel:
     hotel = await HotelsDAO.find_one_or_none(id=hotel_id)
 

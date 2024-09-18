@@ -61,3 +61,8 @@ class NoSuchHotelException(BookingException):
 class DateToLessThanDateFromException(BookingException):
     status_code = status.HTTP_409_CONFLICT
     detail = "Дата окончания бронирования должна быть больше, чем дата его начала"
+
+
+class NoSuchRoomException(BookingException):
+    status_code = status.HTTP_404_NOT_FOUND
+    detail = "Такой комнаты не существует"
