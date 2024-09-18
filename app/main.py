@@ -76,14 +76,11 @@ app.add_middleware(
     ],
 )
 
-# app = VersionedFastAPI(app,
-#                        version_format='{major}',
-#                        prefix_format='/v{major}',
-#                        description='API для бронирования отелей',
-#                        # middleware=[
-#                        #     Middleware(SessionMiddleware, secret_key='mysecretkey')
-#                        # ]
-#                        )
+app = VersionedFastAPI(app,
+                       version_format='{major}',
+                       prefix_format='/v{major}',
+                       description='API для бронирования отелей',
+                       )
 
 app.mount("/static", StaticFiles(directory="app/static"), "static")
 
