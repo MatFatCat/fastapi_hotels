@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Response
+from fastapi_cache.decorator import cache
 
 from app.config import settings
 from app.exceptions import IncorrectEmailOrPasswordException, UserAlreadyExistsException
@@ -48,6 +49,7 @@ async def logout_user(response: Response):
 
 
 @auth_router.get("/me")
+@cache(expire=30)
 async def read_users_me(
     current_user: Users = Depends(get_current_user),
 ) -> SUserProfile:
